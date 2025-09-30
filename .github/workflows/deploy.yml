@@ -20,16 +20,16 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            # Install dependencies (first-time setup safe to rerun)
+            # Install dependencies
             sudo apt update -y
             sudo apt install -y python3 python3-pip git
 
             # Clone repo if it doesn't exist
-            if [ ! -d "/home/ubuntu/ragbot" ]; then
-              git clone https://github.com/<your-username>/<your-repo>.git /home/ubuntu/ragbot
+            if [ ! -d "/home/ubuntu/Rag-AWS-Deploy" ]; then
+              git clone https://github.com/MuhammadSaqlain0978/Rag-AWS-Deploy.git /home/ubuntu/Rag-AWS-Deploy
             fi
 
-            cd /home/ubuntu/ragbot
+            cd /home/ubuntu/Rag-AWS-Deploy
             git reset --hard
             git pull origin main
             pip3 install -r requirements.txt --user
@@ -43,8 +43,8 @@ jobs:
 
               [Service]
               User=ubuntu
-              WorkingDirectory=/home/ubuntu/ragbot
-              ExecStart=/usr/bin/python3 /home/ubuntu/ragbot/app.py
+              WorkingDirectory=/home/ubuntu/Rag-AWS-Deploy
+              ExecStart=/usr/bin/python3 /home/ubuntu/Rag-AWS-Deploy/run_server.py
               Restart=always
 
               [Install]
@@ -54,5 +54,5 @@ jobs:
               sudo systemctl enable ragbot.service
             fi
 
-            # Restart service (works both first-time & updates)
+            # Restart service
             sudo systemctl restart ragbot.service
