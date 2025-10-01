@@ -20,10 +20,7 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            # Install dependencies
-            sudo apt update -y
-            sudo apt install -y python3 python3-pip git
-
+            
             # Clone repo if it doesn't exist
             if [ ! -d "/home/ubuntu/Rag-AWS-Deploy" ]; then
               git clone https://github.com/MuhammadSaqlain0978/Rag-AWS-Deploy.git /home/ubuntu/Rag-AWS-Deploy
@@ -32,7 +29,15 @@ jobs:
             cd /home/ubuntu/Rag-AWS-Deploy
             git reset --hard
             git pull origin main
-            pip3 install -r requirements.txt --user
+
+            # Use Python 3.13 venv (created by Terraform user_data)
+            if [ ! -d "venv" ]; then
+              /usr/local/bin/python3.13 -m venv venv
+            fi
+
+            source venv/bin/activate
+            pip install --upgrade pip
+            pip install -r requirements.txt
 
             # Create systemd service if it doesn't exist
             if [ ! -f "/etc/systemd/system/ragbot.service" ]; then
@@ -44,7 +49,7 @@ jobs:
               [Service]
               User=ubuntu
               WorkingDirectory=/home/ubuntu/Rag-AWS-Deploy
-              ExecStart=/usr/bin/python3 /home/ubuntu/Rag-AWS-Deploy/run_server.py
+              ExecStart=/home/ubuntu/Rag-AWS-Deploy/venv/bin/python run_server.py
               Restart=always
 
               [Install]
