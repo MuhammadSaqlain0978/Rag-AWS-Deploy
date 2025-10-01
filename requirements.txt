@@ -11,7 +11,5 @@ python-docx==1.1.2
 docx2txt==0.9
 mammoth==1.10.0
 faiss-cpu==1.11.0.post1
-langchain-huggingface==0.3.1
-langchain-text-splitters==0.3.9
 langsmith==0.4.10
 sentence-transformers==5.0.0
